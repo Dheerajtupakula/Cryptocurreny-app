@@ -6,7 +6,7 @@ export const CurrencyContext = createContext();
 export const SortingContext = createContext();
 
 export const GlobalContext = ({ children }) => {
-  const [sortOption, setSortOption] = useState("market_cap_asc");
+  const [sortOption, setSortOption] = useState("market_cap_desc");
 
   const [currency, setCurrency] = useState("usd");
   // const [currency, setCurrency] = useState(() => {
