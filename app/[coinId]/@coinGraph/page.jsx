@@ -163,7 +163,7 @@ const CoinGraph = ({ params }) => {
               yaxis: {
                 type: "category",
                 title: {
-                  text: "Date",
+                  text: "Price",
                 },
                 min: lowestLow, // Set the minimum value for the y-axis
                 max: highestHigh,
