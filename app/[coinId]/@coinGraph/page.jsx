@@ -1,40 +1,46 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import ReactApexChart from "react-apexcharts";
+import dynamic from "next/dynamic";
 
 import { CurrencyContext } from "@/components/GlobalContext";
 import Loading from "@/app/loading";
 import { RefreshContext } from "../LayoutClient";
 
-const convertTimestamps = (data) => {
-  return data?.map(([timestamp, open, high, low, close]) => {
-    const date = new Date(timestamp);
-    const formattedDate = date.toISOString().replace("T", " ").substring(5, 11);
-    return {
-      x: formattedDate,
-      y: [open, high, low, close],
-    };
-  });
-};
-const getHighLowValues = (data) => {
-  let highestHigh = Number.MIN_VALUE;
-  let lowestLow = Number.MAX_VALUE;
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-  data?.forEach(([timestamp, open, high, low, close]) => {
-    if (high > highestHigh) highestHigh = high;
-    if (low < lowestLow) lowestLow = low;
-  });
-
-  return { highestHigh, lowestLow };
-};
-
-function Graph({ params }) {
+const CoinGraph = ({ params }) => {
   const [graphData, setGraphData] = useState();
   const [loading, setLoading] = useState(false);
   const [days, setDays] = useState(7);
   const [currency, setCurrency] = useContext(CurrencyContext);
   const [refresh, setRefresh] = useContext(RefreshContext);
+
+  const convertTimestamps = (data) => {
+    return data?.map(([timestamp, open, high, low, close]) => {
+      const date = new Date(timestamp);
+      const formattedDate = date
+        .toISOString()
+        .replace("T", " ")
+        .substring(5, 11);
+      return {
+        x: formattedDate,
+        y: [open, high, low, close],
+      };
+    });
+  };
+
+  const getHighLowValues = (data) => {
+    let highestHigh = Number.MIN_VALUE;
+    let lowestLow = Number.MAX_VALUE;
+
+    data?.forEach(([timestamp, open, high, low, close]) => {
+      if (high > highestHigh) highestHigh = high;
+      if (low < lowestLow) lowestLow = low;
+    });
+
+    return { highestHigh, lowestLow };
+  };
 
   const { highestHigh, lowestLow } = getHighLowValues(graphData);
   const formattedData = convertTimestamps(graphData);
@@ -64,7 +70,6 @@ function Graph({ params }) {
   const handleDays = (d) => {
     setDays(d);
   };
-
   return (
     <>
       {loading && (
@@ -124,7 +129,7 @@ function Graph({ params }) {
               1y
             </button>
           </div>
-          <ReactApexChart
+          <Chart
             className="overflow-x-auto overflow-y-hidden"
             type="candlestick"
             width={600}
@@ -146,7 +151,6 @@ function Graph({ params }) {
                 },
               },
               colors: ["#00BFFF"],
-
               chart: {
                 stacked: true,
               },
@@ -170,6 +174,5 @@ function Graph({ params }) {
       )}
     </>
   );
-}
-
-export default Graph;
+};
+export default CoinGraph;

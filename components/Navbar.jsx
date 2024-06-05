@@ -47,9 +47,6 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
-  useEffect(() => {
-    localStorage.setItem("currency", currency);
-  }, [currency]);
 
   useEffect(() => {
     const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}`;
@@ -64,7 +61,6 @@ const Navbar = () => {
       const data = await fetch(url, options);
       const response = await data.json();
       setcoinData(response);
-      console.log(coinData);
     };
     fetchData();
   }, [search]);

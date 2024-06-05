@@ -1,12 +1,16 @@
 "use client";
 
 import { FaAngleRight } from "react-icons/fa";
-
 import Link from "next/link";
 import { IoRefreshOutline } from "react-icons/io5";
+import { useContext } from "react";
+import { RefreshContext } from "./LayoutClient";
 
-const CoinDetails = ({ params }) => {
-  const RefreshHandle = () => {};
+const page = ({ params }) => {
+  const [refresh, setRefresh] = useContext(RefreshContext);
+  const RefreshHandle = () => {
+    setRefresh((prev) => prev + 1);
+  };
   return (
     <>
       <div className="flex p-2 gap-3 justify-start items-center font-semibold">
@@ -30,4 +34,5 @@ const CoinDetails = ({ params }) => {
   );
 };
 
-export default CoinDetails;
+export default page;
+

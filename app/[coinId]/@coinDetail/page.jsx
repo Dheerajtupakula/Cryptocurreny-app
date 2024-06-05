@@ -100,7 +100,7 @@ const CoinDetail = ({ params }) => {
                     vs_currency.filter((sybl) => sybl.name === currency)[0]
                       .symbol
                   }{" "}
-                  {coinDetail.market_data.low_24h[currency].toLocaleString()}
+                  {coinDetail.market_data.low_24h[currency]?.toLocaleString()}
                 </span>
                 <span className="text-[10px] font-bold">24h Range</span>
                 <span className="text-sm font-bold">
@@ -109,7 +109,7 @@ const CoinDetail = ({ params }) => {
                     vs_currency.filter((sybl) => sybl.name === currency)[0]
                       .symbol
                   }{" "}
-                  {coinDetail.market_data.high_24h[currency].toLocaleString()}
+                  {coinDetail.market_data.high_24h[currency]?.toLocaleString()}
                 </span>
               </div>
             </div>
@@ -161,7 +161,9 @@ const CoinDetail = ({ params }) => {
                     vs_currency.filter((sybl) => sybl.name === currency)[0]
                       .symbol
                   }{" "}
-                  {coinDetail.market_data.total_supply.toLocaleString()}
+                  {coinDetail.market_data.total_supply
+                    ? coinDetail.market_data.total_supply?.toLocaleString()
+                    : "NA"}
                 </span>
               </p>
               <p className="flex justify-between items-center border-b sm:py-3 max-sm:py-2 p-1">
@@ -202,6 +204,4 @@ const CoinDetail = ({ params }) => {
     </>
   );
 };
-
 export default CoinDetail;
-

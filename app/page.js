@@ -55,7 +55,6 @@ const Home = () => {
       setTimeout(() => {
         setLoading(false);
       }, 1000);
-      console.log("feteched");
     };
 
     fetchData();
