@@ -4,16 +4,16 @@ import { useContext, useEffect, useState } from "react";
 import { FaSortDown, FaSortUp } from "react-icons/fa";
 import Link from "next/link";
 
-import { CurrencyContext } from "@/components/GlobalContext";
-import { vs_currency } from "@/app/api/vs_currencies";
+import { StoringContext } from "@/components/GlobalContext";
 import Loading from "@/app/loading";
 import { RefreshContext } from "../LayoutClient";
 
 const CoinDetail = ({ params }) => {
-  const [currency, setCurrency] = useContext(CurrencyContext);
+  const { currency } = useContext(StoringContext);
   const [coinDetail, setCoinDetail] = useState(null);
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useContext(RefreshContext);
+  const { currencySymbol } = useContext(StoringContext);
 
   useEffect(() => {
     const url = `https://api.coingecko.com/api/v3/coins/${params.coinId}`;
@@ -26,13 +26,16 @@ const CoinDetail = ({ params }) => {
     };
 
     const fetchData = async () => {
-      setLoading(true);
-      const data = await fetch(url, options);
-      const response = await data.json();
-      setCoinDetail(response);
-      setTimeout(() => {
+      try {
+        setLoading(true);
+        const data = await fetch(url, options);
+        const response = await data.json();
+        setCoinDetail(response);
+      } catch (error) {
+        console.log("Error: ", error);
+      } finally {
         setLoading(false);
-      }, 1000);
+      }
     };
 
     fetchData();
@@ -58,7 +61,7 @@ const CoinDetail = ({ params }) => {
             </div>
             <div className="flex max-sm:flex-wrap justify-start gap-3 text-nowrap items-center">
               <span className="text-3xl font-bold">
-                {vs_currency.filter((sybl) => sybl.name === currency)[0].symbol}{" "}
+                {currencySymbol}{" "}
                 {parseFloat(
                   coinDetail.market_data.current_price[currency]
                 ).toLocaleString()}
@@ -73,6 +76,7 @@ const CoinDetail = ({ params }) => {
                   )}
                 </span>
                 <span className="font-semibold">
+                  {currencySymbol}{" "}
                   {Math.abs(
                     coinDetail.market_data
                       .price_change_percentage_24h_in_currency[currency]
@@ -96,19 +100,13 @@ const CoinDetail = ({ params }) => {
               <div className="sm:w-4/5 max-sm:w-full text-gray-700 flex items-center justify-between">
                 <span className="text-sm font-bold">
                   {" "}
-                  {
-                    vs_currency.filter((sybl) => sybl.name === currency)[0]
-                      .symbol
-                  }{" "}
+                  {currencySymbol}{" "}
                   {coinDetail.market_data.low_24h[currency]?.toLocaleString()}
                 </span>
                 <span className="text-[10px] font-bold">24h Range</span>
                 <span className="text-sm font-bold">
                   {" "}
-                  {
-                    vs_currency.filter((sybl) => sybl.name === currency)[0]
-                      .symbol
-                  }{" "}
+                  {currencySymbol}{" "}
                   {coinDetail.market_data.high_24h[currency]?.toLocaleString()}
                 </span>
               </div>
@@ -117,50 +115,34 @@ const CoinDetail = ({ params }) => {
               <p className="flex justify-between items-center border-b py-3 p-1">
                 <span>Market Cap</span>
                 <span className="font-medium">
-                  {
-                    vs_currency.filter((sybl) => sybl.name === currency)[0]
-                      .symbol
-                  }{" "}
-                  {coinDetail.market_data.market_cap[currency]}
+                  {currencySymbol} {coinDetail.market_data.market_cap[currency]}
                 </span>
               </p>
               <p className="flex justify-between items-center border-b sm:py-3 max-sm:py-2 p-1">
                 <span>Fully Diluted Valuation</span>
                 <span className="font-medium text-nowrap">
-                  {
-                    vs_currency.filter((sybl) => sybl.name === currency)[0]
-                      .symbol
-                  }{" "}
+                  {currencySymbol}{" "}
                   {coinDetail.market_data.fully_diluted_valuation[currency]}
                 </span>
               </p>
               <p className="flex justify-between items-center border-b sm:py-3 max-sm:py-2 p-1">
                 <span>Total Volume</span>
                 <span className="font-medium text-nowrap">
-                  {
-                    vs_currency.filter((sybl) => sybl.name === currency)[0]
-                      .symbol
-                  }{" "}
+                  {currencySymbol}{" "}
                   {coinDetail.market_data.total_volume[currency]}
                 </span>
               </p>
               <p className="flex justify-between items-center border-b sm:py-3 max-sm:py-2 p-1">
                 <span>Market Cap</span>
                 <span className="font-medium">
-                  {
-                    vs_currency.filter((sybl) => sybl.name === currency)[0]
-                      .symbol
-                  }{" "}
+                  {currencySymbol}{" "}
                   {coinDetail.market_data.circulating_supply.toLocaleString()}
                 </span>
               </p>
               <p className="flex justify-between items-center border-b sm:py-3 max-sm:py-2 p-1">
                 <span>Total Supply</span>
                 <span className="font-medium">
-                  {
-                    vs_currency.filter((sybl) => sybl.name === currency)[0]
-                      .symbol
-                  }{" "}
+                  {currencySymbol}{" "}
                   {coinDetail.market_data.total_supply
                     ? coinDetail.market_data.total_supply?.toLocaleString()
                     : "NA"}
@@ -169,10 +151,7 @@ const CoinDetail = ({ params }) => {
               <p className="flex justify-between items-center border-b sm:py-3 max-sm:py-2 p-1">
                 <span>Max Supply</span>
                 <span className="font-medium">
-                  {
-                    vs_currency.filter((sybl) => sybl.name === currency)[0]
-                      .symbol
-                  }{" "}
+                  {currencySymbol}{" "}
                   {coinDetail.market_data.max_supply?.toLocaleString() ?? "N/A"}
                 </span>
               </p>

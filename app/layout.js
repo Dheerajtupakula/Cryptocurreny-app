@@ -1,7 +1,7 @@
 import { Montserrat } from "next/font/google";
-import Navbar from "@/components/Navbar";
 import { GlobalContext } from "@/components/GlobalContext";
 import "./globals.css";
+import AuthProvider from "@/components/AuthProvider";
 
 export const metadata = {
   title: "Crypto Currencies",
@@ -13,12 +13,15 @@ const montserrat = Montserrat({ subsets: ["latin"] });
 export default function RootLayoutClient({ children }) {
   return (
     <html lang="en">
-      <body className={montserrat.className}>
-        <GlobalContext>
-          <Navbar />
-          <main className="mt-14">{children}</main>
-        </GlobalContext>
-      </body>
+      <AuthProvider>
+        <body className={`max-sm:h-dvh ${montserrat.className}`}>
+          <GlobalContext>
+            <main className="mt-14">
+              {children}
+            </main>
+          </GlobalContext>
+        </body>
+      </AuthProvider>
     </html>
   );
 }

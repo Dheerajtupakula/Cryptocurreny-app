@@ -2,17 +2,20 @@
 
 import { useContext, useEffect, useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 import { vs_currency } from "@/app/api/vs_currencies";
-import { CurrencyContext } from "./GlobalContext";
+import { CoinDataContext, StoringContext } from "./GlobalContext";
 
 const Navbar = () => {
   const [search, setSearch] = useState("");
-  const [currency, setCurrency] = useContext(CurrencyContext);
+  const { currency, setCurrency } = useContext(StoringContext);
+  const { coinData } = useContext(CoinDataContext);
   const [isOpen, setIsOpen] = useState(false);
-  const [coinData, setcoinData] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+
+  const { data: session } = useSession();
 
   const handleSearch = (event) => {
     const searchInput = event.target.value;
@@ -48,42 +51,27 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
-  useEffect(() => {
-    const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}`;
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        "x-cg-demo-api-key": "CG-2qCYaxP26jJ7XaeUafefXSap",
-      },
-    };
-    const fetchData = async () => {
-      const data = await fetch(url, options);
-      const response = await data.json();
-      setcoinData(response);
-    };
-    fetchData();
-  }, [search]);
-
   return (
     <nav className="w-full fixed top-0 p-2 px-3 z-40 bg-slate-400 flex justify-between items-center">
       <div>
-        <img
-          className="content-cover"
-          src="https://static.coingecko.com/s/coingecko-logo-8903d34ce19ca4be1c81f0db30e924154750d208683fad7ae6f2ce06c76d0a56.png"
-          alt="Logo"
-          width={100}
-          height={100}
-        />
+        <Link href="/">
+          <img
+            className="content-cover"
+            src="https://static.coingecko.com/s/coingecko-logo-8903d34ce19ca4be1c81f0db30e924154750d208683fad7ae6f2ce06c76d0a56.png"
+            alt="Logo"
+            width={100}
+            height={100}
+          />
+        </Link>
       </div>
       {/*large Screen only */}
-      <div className="flex gap-2 max-sm:hidden">
+      <div className="flex gap-2 justify-center items-center max-sm:hidden">
         <div className="relative">
           <input
             value={search}
             onChange={handleSearch}
             type="text"
-            placeholder="Search here .."
+            placeholder="Search here ..."
             className="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-full border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"
           />
           {searchResults && searchResults.length > 0 && (
@@ -91,7 +79,7 @@ const Navbar = () => {
               {searchResults.map((coin) => (
                 <Link
                   key={coin.id}
-                  href={`/${coin.id}`}
+                  href={`/coins/${coin.id}`}
                   onClick={handleCoinClickLg}
                   className="flex justify-between gap-3 items-center"
                 >
@@ -127,6 +115,15 @@ const Navbar = () => {
             </option>
           ))}
         </select>
+        <div>
+          {session && (
+            <Link href="/profile">
+              <button className="font-semibold p-2 bg-slate-600 text-white hover:bg-slate-800 rounded-full px-4 text-sm">
+                {session.user.email.split("@")[0]}
+              </button>
+            </Link>
+          )}
+        </div>
       </div>
 
       {/*small Screen only */}
@@ -143,7 +140,7 @@ const Navbar = () => {
               aria-labelledby="menu-button"
               tabIndex="-1"
             >
-              <div className="py-1 grid gap-2 p-2" role="none">
+              <div className="py-1 grid gap-2 justify-center p-2" role="none">
                 <div className="relative">
                   <input
                     type="text"
@@ -158,7 +155,7 @@ const Navbar = () => {
                       {searchResults.map((coin) => (
                         <Link
                           key={coin.id}
-                          href={`/${coin.id}`}
+                          href={`/coins/${coin.id}`}
                           onClick={handleCoinClickSm}
                           className="flex justify-between gap-3 items-center"
                         >
@@ -190,15 +187,20 @@ const Navbar = () => {
                   onChange={handleCurrency}
                 >
                   {vs_currency.map((curr) => (
-                    <option
-                      onClick={toggleMenu}
-                      key={curr.name}
-                      value={curr.name}
-                    >
+                    <option key={curr.name} value={curr.name}>
                       {curr.name}
                     </option>
                   ))}
                 </select>
+                <div onClick={toggleMenu}>
+                  {session && (
+                    <Link href="/profile">
+                      <button className="font-semibold w-full p-2 bg-slate-600 text-white hover:bg-slate-800 rounded-full px-4 text-sm">
+                        Profile
+                      </button>
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           )}

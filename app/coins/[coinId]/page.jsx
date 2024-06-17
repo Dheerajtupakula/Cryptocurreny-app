@@ -5,12 +5,19 @@ import Link from "next/link";
 import { IoRefreshOutline } from "react-icons/io5";
 import { useContext } from "react";
 import { RefreshContext } from "./LayoutClient";
+import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const page = ({ params }) => {
   const [refresh, setRefresh] = useContext(RefreshContext);
+  const { data: session } = useSession();
+
   const RefreshHandle = () => {
     setRefresh((prev) => prev + 1);
   };
+  if (!session) {
+    redirect("/login");
+  }
   return (
     <>
       <div className="flex p-2 gap-3 justify-start items-center font-semibold">
@@ -35,4 +42,3 @@ const page = ({ params }) => {
 };
 
 export default page;
-

@@ -1,10 +1,12 @@
 "use client";
 
+import { RadioButton } from "primereact/radiobutton";
+
 import { useContext } from "react";
-import { SortingContext } from "./GlobalContext";
+import { StoringContext } from "./GlobalContext";
 
 const SideBar = () => {
-  const [sortOption, setSortOption] = useContext(SortingContext);
+  const { sortOption, setSortOption } = useContext(StoringContext);
 
   const handleSortOptionChange = (e) => {
     setSortOption(e.target.value);
@@ -29,50 +31,58 @@ const SideBar = () => {
       {/* Radio buttons for larger screens */}
       <div className="hidden sm:flex items-center">
         <label className="mr-2">Sort by: </label>
-        <label className="mr-4 text-nowrap">
-          <input
-            type="radio"
-            name="sortOption"
-            value="market_cap_asc"
-            checked={sortOption === "market_cap_asc"}
-            onChange={handleSortOptionChange}
-            className="radiobutton ml-3"
-          />
-          marketcap_Asc
-        </label>
-        <label className="mr-4 text-nowrap">
-          <input
-            type="radio"
-            name="sortOption"
-            value="market_cap_desc"
-            checked={sortOption === "market_cap_desc"}
-            onChange={handleSortOptionChange}
-            className="radiobutton ml-3"
-          />
-          marketcap_Desc
-        </label>
-        <label className="mr-4 text-nowrap">
-          <input
-            type="radio"
-            name="sortOption"
-            value="volume_asc"
-            checked={sortOption === "volume_asc"}
-            onChange={handleSortOptionChange}
-            className="radiobutton ml-3"
-          />
-          <span>volume_Asc</span>
-        </label>
-        <label className="mr-4 text-nowrap">
-          <input
-            type="radio"
-            name="sortOption"
-            value="volume_desc"
-            checked={sortOption === "volume_desc"}
-            onChange={handleSortOptionChange}
-            className="radiobutton ml-3"
-          />
-          volume_Desc
-        </label>
+        <div className="flex flex-wrap gap-3">
+          <div className="flex align-items-center">
+            <RadioButton
+              inputId="sortOption1"
+              name="sorting"
+              value="market_cap_asc"
+              onChange={(e) => setSortOption(e.value)}
+              checked={sortOption === "market_cap_asc"}
+            />
+            <label htmlFor="sortOption1" className="ml-2">
+              MarketCap_asc
+            </label>
+          </div>
+          <div className="flex align-items-center">
+            <RadioButton
+              className="text-xl"
+              inputId="sortOption2"
+              name="sorting"
+              value="market_cap_desc"
+              onChange={(e) => setSortOption(e.value)}
+              checked={sortOption === "market_cap_desc"}
+            />
+            <label htmlFor="sortOption2" className="ml-2">
+              MarketCap_desc
+            </label>
+          </div>
+          <div className="flex align-items-center">
+            <RadioButton
+              className="text-xl"
+              inputId="sortOption3"
+              name="sorting"
+              value="volume_asc"
+              onChange={(e) => setSortOption(e.value)}
+              checked={sortOption === "volume_asc"}
+            />
+            <label htmlFor="sortOption3" className="ml-2">
+              Volume_asc
+            </label>
+          </div>
+          <div className="flex align-items-center">
+            <RadioButton
+              inputId="sortOption4"
+              name="sorting"
+              value="volume_desc"
+              onChange={(e) => setSortOption(e.value)}
+              checked={sortOption === "volume_desc"}
+            />
+            <label htmlFor="sortOption4" className="ml-2">
+              Volume_desc
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   );
