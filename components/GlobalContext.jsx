@@ -9,6 +9,7 @@ export const CoinDataContext = createContext();
 
 export const GlobalContext = ({ children }) => {
   const [sortOption, setSortOption] = useState("market_cap_desc");
+
   const [currency, setCurrency] = useState(() => {
     const savedCurrency =
       typeof localStorage !== "undefined" && localStorage.getItem("currency");
