@@ -8,8 +8,13 @@ import { FaSortDown, FaSortUp } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import Loading from "@/app/loading";
 import { StoringContext } from "./GlobalContext";
+import {
+  TbSortAscendingNumbers,
+  TbSortDescendingNumbers,
+} from "react-icons/tb";
+import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from "react-icons/md";
 
-const Table = ({ coinData, page, toDisplay, isDisable }) => {
+const Table = ({ coinData, sortData, sortOrder, isDisable }) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [myCoins, setMyCoins] = useState([]);
@@ -80,12 +85,57 @@ const Table = ({ coinData, page, toDisplay, isDisable }) => {
           <thead>
             <tr>
               <th className="p-2 sticky left-0 min-w-28 bg-slate-200">Coin</th>
-              <th className=" bg-slate-200">Price</th>
+              <th className=" bg-slate-200">
+                <span className="flex gap-2 justify-center items-center">
+                  <p>Price</p>
+                  <span
+                    className="cursor-pointer"
+                    onClick={() => sortData("current_price")}
+                  >
+                    {sortOrder.key == "current_price" &&
+                    sortOrder.order == "asc" ? (
+                      <MdOutlineArrowDropUp />
+                    ) : (
+                      <MdOutlineArrowDropDown />
+                    )}
+                  </span>
+                </span>
+              </th>
               <th className="p-2 text-nowrap  bg-slate-200">
                 Price Change 24h
               </th>
-              <th className="p-2 text-nowrap  bg-slate-200">Market Cap</th>
-              <th className="p-2 text-nowrap  bg-slate-200">Total Volume</th>
+              <th className="p-2 text-nowrap   bg-slate-200">
+                <span className="flex gap-2 justify-center items-center">
+                  <p>Market Cap</p>
+                  <span
+                    className="cursor-pointer"
+                    onClick={() => sortData("market_cap")}
+                  >
+                    {sortOrder.key == "market_cap" &&
+                    sortOrder.order == "asc" ? (
+                      <TbSortAscendingNumbers />
+                    ) : (
+                      <TbSortDescendingNumbers />
+                    )}
+                  </span>
+                </span>
+              </th>
+              <th className="p-2 text-nowrap  bg-slate-200">
+                <span className="flex gap-2 justify-center items-center">
+                  <p> Total Volume</p>
+                  <span
+                    className="cursor-pointer"
+                    onClick={() => sortData("total_volume")}
+                  >
+                    {sortOrder.key == "total_volume" &&
+                    sortOrder.order == "asc" ? (
+                      <TbSortAscendingNumbers />
+                    ) : (
+                      <TbSortDescendingNumbers />
+                    )}
+                  </span>
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody className="py-4">

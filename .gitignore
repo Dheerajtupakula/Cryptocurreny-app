@@ -28,6 +28,10 @@ yarn-error.log*
 # local env files
 .env*.local
 
+Coin-List-By-MarketData-in-Usd.js
+
+SideBar.jsx
+
 # vercel
 .vercel
 

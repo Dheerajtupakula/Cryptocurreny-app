@@ -47,6 +47,9 @@ const Navbar = () => {
   const handleCurrency = (event) => {
     setCurrency(event.target.value);
   };
+  const handleCloseMenu = () => {
+    toggleMenu();
+  };
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -184,7 +187,10 @@ const Navbar = () => {
                   className="outline-none rounded-full p-2 px-3 flex justify-between"
                   id="currency"
                   value={currency}
-                  onChange={handleCurrency}
+                  onChange={(e) => {
+                    handleCurrency(e);
+                    handleCloseMenu();
+                  }}
                 >
                   {vs_currency.map((curr) => (
                     <option key={curr.name} value={curr.name}>

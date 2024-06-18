@@ -66,7 +66,7 @@ const CoinDetail = ({ params }) => {
                   coinDetail.market_data.current_price[currency]
                 ).toLocaleString()}
               </span>
-              <p className="flex justify-center  items-center">
+              <p className="flex justify-center items-center">
                 <span>
                   {coinDetail.market_data
                     .price_change_percentage_24h_in_currency[currency] >= 0 ? (
@@ -75,7 +75,14 @@ const CoinDetail = ({ params }) => {
                     <FaSortDown className="text-red-500" />
                   )}
                 </span>
-                <span className="font-semibold">
+                <span
+                  className={`font-semibold ${
+                    coinDetail.market_data
+                      .price_change_percentage_24h_in_currency[currency] >= 0
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
                   {currencySymbol}{" "}
                   {Math.abs(
                     coinDetail.market_data
@@ -166,11 +173,12 @@ const CoinDetail = ({ params }) => {
                     href={coinDetail.links.homepage[0]}
                     target="_blank"
                   >
-                    {params.coinId}.org
+                    {params.coinId.replace(/-/g, " ")}.org
                   </Link>
                   <Link
                     className="p-2 text-[9px] font-semibold bg-slate-300 rounded-lg"
                     href={coinDetail.links.homepage[0]}
+                    target="_blank"
                   >
                     whitepaper
                   </Link>

@@ -9,7 +9,6 @@ export const CoinDataContext = createContext();
 
 export const GlobalContext = ({ children }) => {
   const [sortOption, setSortOption] = useState("market_cap_desc");
-
   const [currency, setCurrency] = useState(() => {
     const savedCurrency =
       typeof localStorage !== "undefined" && localStorage.getItem("currency");
@@ -18,19 +17,12 @@ export const GlobalContext = ({ children }) => {
   const [coinData, setCoinData] = useState([]);
   const [refresh, setRefresh] = useState(0);
   const [loading, setLoading] = useState(false);
-
-  const [userDataRegister, setUserDataRegister] = useState({
-    email: "",
-    password: "",
-    reenteredPassword: "",
-  });
-
   const [currencySymbol, setCurrencySymbol] = useState("");
-
+  // Api request...
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=${sortOption}`;
+        const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=${sortOption}&per_page=250`;
         const options = {
           method: "GET",
           headers: {
@@ -40,6 +32,7 @@ export const GlobalContext = ({ children }) => {
           },
         };
         setLoading(true);
+
         const response = await fetch(url, options);
         const data = await response.json();
         if (Array.isArray(data)) {
@@ -58,13 +51,13 @@ export const GlobalContext = ({ children }) => {
 
     fetchData();
   }, [refresh, currency, sortOption]);
-
+  // symbol...
   useEffect(() => {
     const symbol = vs_currency.filter((sybl) => sybl.name === currency)[0]
       ?.symbol;
     setCurrencySymbol(symbol);
   }, [vs_currency, currency]);
-
+  // currency change in localStorage...
   useEffect(() => {
     if (typeof localStorage !== "undefined") {
       try {

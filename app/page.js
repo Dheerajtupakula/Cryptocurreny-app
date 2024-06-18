@@ -5,8 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { IoRefreshOutline } from "react-icons/io5";
 
-import SideBar from "@/components/SideBar";
-import { CoinDataContext } from "@/components/GlobalContext";
+import { CoinDataContext, StoringContext } from "@/components/GlobalContext";
 import Loading from "./loading";
 import Table from "@/components/Table";
 import Navbar from "@/components/Navbar";
@@ -15,32 +14,54 @@ const Home = () => {
   const { coinData, setRefresh, loading } = useContext(CoinDataContext);
   const [page, setPage] = useState(1);
   const { data: session } = useSession();
+  const [data, setData] = useState([]);
+  const { sortOption, setSortOption } = useContext(StoringContext);
+  const [sortOrder, setSortOrder] = useState({
+    key: "current_price",
+    order: "asc",
+  });
   const route = useRouter();
 
   const toDisplay = 10;
-
-  const indexOfLastItem = page * toDisplay;
-  const indexOfFirstItem = indexOfLastItem - toDisplay;
-  const currentItems = coinData.slice(indexOfFirstItem, indexOfLastItem);
 
   useEffect(() => {
     if (!session) {
       route.push("/login");
     }
-  });
+  }, [session, route]);
+
+  useEffect(() => {
+    setData(coinData);
+  }, [coinData]);
+
+  const sortData = (key) => {
+    const order =
+      sortOrder.key === key && sortOrder.order === "asc" ? "desc" : "asc";
+    const sortedData = [...data].sort((a, b) => {
+      if (a[key] < b[key]) return order === "asc" ? -1 : 1;
+      if (a[key] > b[key]) return order === "asc" ? 1 : -1;
+      return 0;
+    });
+    setData(sortedData);
+    setSortOrder({ key, order });
+  };
+
+  const indexOfLastItem = page * toDisplay;
+  const indexOfFirstItem = indexOfLastItem - toDisplay;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePrevBtn = () => {
-    if (page === 0) {
-      setPage(1);
-    } else if (page > 1) {
+    if (page > 1) {
       setPage((prev) => prev - 1);
     }
   };
+
   const handleNextBtn = () => {
-    if (page < coinData.length / toDisplay) {
+    if (page < Math.ceil(data.length / toDisplay)) {
       setPage((prev) => prev + 1);
     }
   };
+
   const RefreshHandle = () => {
     setRefresh((prev) => prev + 1);
   };
@@ -48,19 +69,18 @@ const Home = () => {
   return (
     <>
       {loading && <Loading />}
-      {!loading && coinData && (
+      {!loading && data.length > 0 && (
         <section className="w-full relative">
           <Navbar />
-          <SideBar />
-          <div className="w-full max-sm:mt-2 bg-slate-200 mb-12 overflow-x-auto">
+          <div className="w-full max-sm:-mt-3 bg-slate-200 mb-12 overflow-x-auto">
             <Table
               coinData={currentItems}
-              page={page}
-              toDisplay={toDisplay}
+              sortData={sortData}
+              sortOrder={sortOrder}
               isDisable
             />
           </div>
-          <div className="fixed bottom-0 w-full p-3 flex justify-between items-center text-white  bg-slate-900">
+          <div className="fixed bottom-0 w-full p-3 pb-5 max-sm:pb-3 flex justify-between items-center text-white bg-slate-900">
             <div>
               <button type="button" onClick={handlePrevBtn}>
                 prev
@@ -68,12 +88,7 @@ const Home = () => {
             </div>
 
             <div>
-              page: {page} of{" "}
-              {Math.round(
-                (coinData.length / toDisplay) % 2 !== 0
-                  ? coinData.length / toDisplay + 1
-                  : coinData.length / toDisplay
-              )}
+              page: {page} of {Math.ceil(data.length / toDisplay)}
             </div>
 
             <div>
@@ -98,4 +113,5 @@ const Home = () => {
     </>
   );
 };
+
 export default Home;
