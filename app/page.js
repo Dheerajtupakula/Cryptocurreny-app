@@ -3,7 +3,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { IoRefreshOutline } from "react-icons/io5";
 
 import { CoinDataContext, StoringContext } from "@/components/GlobalContext";
 import Loading from "./loading";
@@ -70,7 +69,7 @@ const Home = () => {
     <>
       {loading && <Loading />}
       {!loading && data.length > 0 && (
-        <section className="w-full relative">
+        <section className="w-full">
           <Navbar />
           <div className="w-full max-sm:-mt-3 bg-slate-200 mb-12 overflow-x-auto">
             <Table
@@ -96,17 +95,6 @@ const Home = () => {
                 next
               </button>
             </div>
-          </div>
-          <div className="fixed bottom-14 right-2">
-            <button
-              onClick={RefreshHandle}
-              className="flex justify-center items-center gap-2  p-2 rounded-lg bg-slate-500/25 hover:bg-slate-400 text-white"
-            >
-              <span>
-                <IoRefreshOutline />
-              </span>
-              <span>Refresh</span>
-            </button>
           </div>
         </section>
       )}

@@ -8,10 +8,6 @@ import { FaSortDown, FaSortUp } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import Loading from "@/app/loading";
 import { StoringContext } from "./GlobalContext";
-import {
-  TbSortAscendingNumbers,
-  TbSortDescendingNumbers,
-} from "react-icons/tb";
 import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from "react-icons/md";
 
 const Table = ({ coinData, sortData, sortOrder, isDisable }) => {
@@ -113,9 +109,9 @@ const Table = ({ coinData, sortData, sortOrder, isDisable }) => {
                   >
                     {sortOrder.key == "market_cap" &&
                     sortOrder.order == "asc" ? (
-                      <TbSortAscendingNumbers />
+                      <MdOutlineArrowDropUp />
                     ) : (
-                      <TbSortDescendingNumbers />
+                      <MdOutlineArrowDropDown />
                     )}
                   </span>
                 </span>
@@ -129,9 +125,9 @@ const Table = ({ coinData, sortData, sortOrder, isDisable }) => {
                   >
                     {sortOrder.key == "total_volume" &&
                     sortOrder.order == "asc" ? (
-                      <TbSortAscendingNumbers />
+                      <MdOutlineArrowDropUp />
                     ) : (
-                      <TbSortDescendingNumbers />
+                      <MdOutlineArrowDropDown />
                     )}
                   </span>
                 </span>
